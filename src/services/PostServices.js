@@ -4,8 +4,8 @@ const api = axios.create({
     baseURL: 'http://127.0.0.1:8080',
 })
 
-export const loadPosts = async (page) => {
-    const { data } = await api.get(`/api/posts?page=${page}`, {
+export const loadPosts = async (page, offset) => {
+    const { data } = await api.get(`/api/posts?page=${page}&offset=${offset}`, {
         headers: {
             'Authorization': localStorage.getItem('user')
         }

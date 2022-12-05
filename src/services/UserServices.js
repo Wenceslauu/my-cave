@@ -16,6 +16,16 @@ export const login = async (loginData) => {
     return data
 }
 
+export const loadOwnUser = async () => {
+    const { data } = await api.get('/api/user', {
+        headers: {
+            'Authorization': localStorage.getItem('user')
+        }
+    })
+
+    return data
+}
+
 export const loadUsers = async () => {
     const { data } = await api.get('/api/users', {
         headers: {

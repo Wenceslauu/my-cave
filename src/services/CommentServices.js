@@ -13,3 +13,13 @@ export const loadComments = async (postID) => {
 
     return data
 }
+
+export const writeComment = async (commentBody, postID) => {
+    const { data } = await api.post(`/api/posts/${postID}/comments`, commentBody, {
+        headers: {
+            'Authorization': localStorage.getItem('user')
+        }
+    })
+
+    return data
+}
