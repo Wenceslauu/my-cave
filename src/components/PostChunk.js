@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react'
+import { useCallback, useContext, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import { loadPosts } from '../services/PostServices'
@@ -7,20 +7,29 @@ import { ServerErrorContext } from '../contexts/ServerErrorContext'
 
 import Post from './Post'
 
-function PostChunk({ page }) {
-    const [posts, setPosts] = useState([])
-
+function PostChunk({ page, offset, posts, changePostsInState }) {
     const { setServerErrors, setShowServerErrors } = useContext(ServerErrorContext)
 
     const navigate = useNavigate()
 
+    const offsetRef = useRef(offset)
+    
+    // const loadPostsInState = useCallback((newPosts) => {
+    //     changePostsInState((prevPosts) => [...prevPosts, ...newPosts])
+    // }, [changePostsInState])
+
     useEffect(() => {
+        const loadPostsInState = (newPosts) => {
+            changePostsInState((prevPosts) => [...prevPosts, ...newPosts])
+        } 
+
         const fetchData = async () => {
             try {
-                const data = await loadPosts(page)
+                console.log('offset:', offsetRef.current)
+                const data = await loadPosts(page, offsetRef.current)
 
                 console.log(data)
-                setPosts(data.posts)
+                loadPostsInState(data.posts)
             } catch (error) {
                 if (error.response.status === 401) {
                     localStorage.removeItem('user')
@@ -33,7 +42,7 @@ function PostChunk({ page }) {
         }
 
         fetchData()
-    }, [navigate, setServerErrors, setShowServerErrors, page])
+    }, [navigate, setServerErrors, setShowServerErrors, page, offsetRef, changePostsInState])
 
     // function changeLikes(postID) {
         

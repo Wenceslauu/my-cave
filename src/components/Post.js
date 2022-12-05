@@ -7,7 +7,7 @@ import { toggleLike } from '../services/PostServices'
 import { ServerErrorContext } from '../contexts/ServerErrorContext'
 
 import Avatar from '../components/Avatar'
-import CommentChunk from './CommentChunk'
+import CommentSection from './CommentSection'
 
 function Post({ post }) {
     const [showComments, setShowComments] = useState(false)
@@ -50,7 +50,7 @@ function Post({ post }) {
                     </span>
                 </div>
                 <div className='ml-12 px-2 py-2 whitespace-normal break-words [hyphens:auto]'>{post.text}</div>
-                {(showComments) ? <CommentChunk post={post}/> : null}
+                {(showComments) ? <CommentSection post={post}/> : null}
                 <div className='flex justify-evenly items-center gap-4 mt-4'>
                     <button onClick={() => setShowComments((prevShowComments) => !prevShowComments)} className="btn flex-1 md:w-1/2 md:flex-none">
                         {(showComments) ? 'Hide comments' : 'Show comments'}
