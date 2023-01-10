@@ -1,11 +1,12 @@
 function Avatar({
-    src="https://www.kindpng.com/picc/m/24-248253_user-profile-default-image-png-clipart-png-download.png",
-    alt
+    src="https://res.cloudinary.com/dtxsobdxk/image/upload/c_scale,h_512,w_512/v1672439103/3dcd4af5bc9e06d36305984730ab7888_nyy3bw.jpg",
+    alt,
+    customWidth=''
 }) {
     return (
         <div className="avatar">
-            <div className="w-12 rounded-full">
-                <img src={src} alt={alt} className='scale-[1.15]'/>
+            <div className={`${customWidth} rounded-full`}>
+                <img src={src} alt={alt} />
             </div>
         </div>
     )

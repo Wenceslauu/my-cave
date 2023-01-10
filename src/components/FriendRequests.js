@@ -4,32 +4,35 @@ import { Link, useNavigate } from 'react-router-dom'
 import { loadFriendReqs } from '../services/FriendReqServices'
 import { answerFriendReq } from '../services/FriendReqServices'
 
-import { ServerErrorContext } from '../contexts/ServerErrorContext'
+import { ServerMessageContext } from '../contexts/ServerMessageContext'
+
 import Avatar from './Avatar'
 
 function FriendRequests() {
-    const [requestsNumber, setRequestsNumber] = useState(0)
     const [friendRequests, setFriendRequests] = useState([])
+    const [loading, setLoading] = useState(false)
 
-    const { setServerErrors, setShowServerErrors } = useContext(ServerErrorContext)
+    const { setServerErrors, setShowServerErrors, setServerSuccesses, setShowServerSuccesses } = useContext(ServerMessageContext)
 
     const navigate = useNavigate()
 
     useEffect(() => {
         const fetchData = async () => {
             try {
+                setLoading(true)
                 const data = await loadFriendReqs()
+                setLoading(false)
 
                 setFriendRequests(data.friendRequests)
-                setRequestsNumber(data.requestsNumber)
             } catch (error) {
+                setShowServerErrors(true)
                 if (error.response.status === 401) {
+                    setServerErrors([error.response.statusText])
+
                     localStorage.removeItem('user')
                     navigate('/login')
-                } else {
+                } else
                     setServerErrors([error.response.data.error])
-                    setShowServerErrors(true)
-                }
             }
         }
 
@@ -38,21 +41,21 @@ function FriendRequests() {
 
     const handleClick = async (answerBody, requestID) => {
         try {
-            await answerFriendReq(answerBody, requestID)
+            const data = await answerFriendReq(answerBody, requestID)
 
-            setRequestsNumber((prevRequestsNumber) => {
-                return (prevRequestsNumber - 1)
-            })
             setFriendRequests(friendRequests.filter(req => req._id !== requestID))
-            
+
+            setServerSuccesses([data.success])
+            setShowServerSuccesses(true)
         } catch (error) {
+            setShowServerErrors(true)
             if (error.response.status === 401) {
+                setServerErrors([error.response.statusText])
+
                 localStorage.removeItem('user')
                 navigate('/login')
-            } else {
+            } else
                 setServerErrors([error.response.data.error])
-                setShowServerErrors(true)
-            }
         }
     }
 
@@ -60,8 +63,8 @@ function FriendRequests() {
         return (
             <li key={friendReq._id}>
                 <div className='flex gap-2 items-center'>
-                    <Link to={`/profile/${friendReq.requester._id}`} className="flex flex-1 items-center gap-4 truncate p-1">
-                        <Avatar src={friendReq.requester.photo} alt="Your requester" />
+                    <Link to={`/users/${friendReq.requester._id}`} className="flex flex-1 items-center gap-4 truncate p-1">
+                        <Avatar src={friendReq.requester.photo} alt="Your requester" customWidth='avatar-pic' />
                         <p className='flex-1 truncate hidden md:block'>{friendReq.requester.username}</p>
                     </Link>
                     <div className='shrink-0'>
@@ -78,15 +81,22 @@ function FriendRequests() {
             <label tabIndex='0' className='btn btn-ghost btn-circle'>
                 <div className="w-10 rounded-full flex justify-center align-center">
                     <div className='indicator'>
-                        { (requestsNumber > 0) ? <span className="indicator-item badge badge-secondary">{requestsNumber}</span> : null }
+                        { (friendRequests.length > 0) ? <span className="indicator-item badge badge-secondary">{friendRequests.length}</span> : null }
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" className='fill-white'><path d="M15.137 3.945c-.644-.374-1.042-1.07-1.041-1.82v-.003c.001-1.172-.938-2.122-2.096-2.122s-2.097.95-2.097 2.122v.003c.001.751-.396 1.446-1.041 1.82-4.667 2.712-1.985 11.715-6.862 13.306v1.749h20v-1.749c-4.877-1.591-2.195-10.594-6.863-13.306zm-3.137-2.945c.552 0 1 .449 1 1 0 .552-.448 1-1 1s-1-.448-1-1c0-.551.448-1 1-1zm3 20c0 1.598-1.392 3-2.971 3s-3.029-1.402-3.029-3h6z"/></svg>
                     </div>
                 </div>
             </label>
-            <ul tabIndex='0' className='dropdown-content mt-4 p-2 shadow rounded-box w-44 md:w-64 bg-base-300'>
-                { (requestsNumber > 0) ? friendReqItems : (
-                    <div className='p-4'>No friend requests</div>
-                )}
+            <ul tabIndex='0' className='flex flex-col items-center dropdown-content mt-4 p-2 shadow rounded-box w-44 md:w-64 bg-base-300'>
+                {(loading) ? 
+                    <div className="lds-ripple mx-auto">
+                        <div>
+                            </div><div>
+                        </div>
+                    </div>
+                    :   (friendRequests.length > 0) ? friendReqItems : (
+                        <div className='p-4'>No friend requests</div>
+                    )
+                }
             </ul>
         </div>
     )
