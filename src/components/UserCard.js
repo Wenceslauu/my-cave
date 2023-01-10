@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom'
 
 import Avatar from './Avatar'
 
-function UserCard({ user }) {
+function UserCard({ user, fontSize='' }) {
     return (
         <li>
             <Link to={`/users/${user._id}`}>
@@ -11,7 +11,7 @@ function UserCard({ user }) {
                         <Avatar src={user.photo} alt={user.username} />
                     </div>       
                     <div className="card-body items-center text-center truncate">
-                        <h2 className="card-title mb-4">{user.username}</h2>
+                        <h2 className={`card-title mb-4 ${fontSize}`}>{user.username}</h2>
                     </div>
                 </div>
             </Link>
