@@ -136,7 +136,7 @@ function CommentSection({ post }) {
                 {commentItems}
             </ul>
             {loading && 
-                <div className="lds-ripple mx-auto">
+                <div className="lds-ripple mx-auto mt-[-24px]">
                     <div>
                         </div><div>
                     </div>
