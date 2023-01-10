@@ -137,7 +137,7 @@ function Profile() {
 
     const someFriendItems = friends.map((friend) => {
         return (
-            <UserCard key={friend._id} user={friend} />
+            <UserCard key={friend._id} user={friend} width='w-[calc(50%-0.5rem)]' />
         )
     }).slice(0, 2)
 

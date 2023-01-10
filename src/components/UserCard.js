@@ -2,9 +2,12 @@ import { Link } from 'react-router-dom'
 
 import Avatar from './Avatar'
 
-function UserCard({ user, fontSize='' }) {
+function UserCard({ user,
+    fontSize='',
+    width=''
+}) {
     return (
-        <li>
+        <li className={width} >
             <Link to={`/users/${user._id}`}>
                 <div className="card bg-base-300 shadow-xl hover:outline hover:outline-2 hover:outline-secondary">
                     <div className="px-10 pt-10 flex justify-center">
