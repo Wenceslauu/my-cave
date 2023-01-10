@@ -13,6 +13,7 @@ function CommentSection({ post }) {
     const [comments, setComments] = useState([])
     const [newComment, setNewComment] = useState('')
     const [clientError, setClientError] = useState('')
+    const [loading, setLoading] = useState(false)
     
     const user = useContext(UserContext)
 
@@ -23,7 +24,9 @@ function CommentSection({ post }) {
     useEffect(() => {
         const fetchData = async () => {
             try {
+                setLoading(true)
                 const data = await loadComments(post._id)
+                setLoading(false)
 
                 setComments(data.comments)
             } catch (error) {
@@ -132,6 +135,13 @@ function CommentSection({ post }) {
             <ul className='flex flex-col gap-4 text-black'>
                 {commentItems}
             </ul>
+            {loading && 
+                <div className="lds-ripple mx-auto">
+                    <div>
+                        </div><div>
+                    </div>
+                </div>
+            }
         </div>
     )
 }
