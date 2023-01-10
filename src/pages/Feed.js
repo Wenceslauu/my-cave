@@ -1,4 +1,5 @@
 import PostSection from '../components/PostSection'
+import FriendSuggestions from '../components/FriendSuggestions'
 
 function Feed() {
     return (
@@ -8,7 +9,7 @@ function Feed() {
                     <PostSection />
                 </div>
                 <div className='basis-0 grow-[1] bg-base-300 rounded-box p-4 hidden lg:block'>
-                    friend suggestions
+                    <FriendSuggestions />
                 </div>
             </div>
         </>

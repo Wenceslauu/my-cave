@@ -1,9 +1,9 @@
 import { useContext, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-import { login } from '../services/UserServices'
+import { ServerMessageContext } from '../contexts/ServerMessageContext'
 
-import { ServerErrorContext } from '../contexts/ServerErrorContext'
+import { login } from '../services/UserServices'
 
 import Input from '../components/Input'
 
@@ -16,7 +16,7 @@ function Login() {
     })
     const [clientErrors, setClientErrors] = useState({})
     
-    const { setServerErrors, setShowServerErrors } = useContext(ServerErrorContext)
+    const { setServerErrors, setShowServerErrors, setServerSuccesses, setShowServerSuccesses } = useContext(ServerMessageContext)
 
     const navigate = useNavigate()
 
@@ -48,6 +48,10 @@ function Login() {
             const data = await login(credentials)
 
             localStorage.setItem('user', data.token)
+
+            setServerSuccesses([data.success])
+            setShowServerSuccesses(true)
+
             navigate('/feed')
         } catch (error) {
             setCredentials({
@@ -89,10 +93,34 @@ function Login() {
         })
     }
 
+    const handleGuest = async (e) => {
+        try {
+            const data = await login({
+                username: 'wences',
+                password: 'wenceslau'
+            }) // TODO
+
+            localStorage.setItem('user', data.token)
+
+            setServerSuccesses([data.success])
+            setShowServerSuccesses(true)
+
+            navigate('/feed')
+        } catch (error) {
+            setCredentials({
+                username: '',
+                password: ''
+            })
+
+            setServerErrors([error.response.data.error])
+            setShowServerErrors(true)
+        }
+    }
+
     return (
         <>
             <div className='container mx-auto px-16 md:w-1/3 md:px-0'>
-                    <form id='signup' onSubmit={handleSubmit} noValidate className='form-control gap-4'>
+                <form id='signup' onSubmit={handleSubmit} noValidate className='form-control gap-4'>
                     <Input
                         type="text"
                         field="username"
@@ -115,6 +143,7 @@ function Login() {
                         minLength="8"
                     />
                     <button className={`btn btn-primary rounded-full ${(Object.keys(clientErrors).length > 0 || credentials.username === '' || credentials.password === '') ? 'btn-disabled': null}`} type='submit'>Login</button>
+                    <button onClick={handleGuest} className='btn btn-secondary rounded-full'>Login as a guest</button>
                 </form>
             </div>
         </>

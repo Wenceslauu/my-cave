@@ -1,9 +1,9 @@
 import { useContext, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-import { signup } from '../services/UserServices'
+import { ServerMessageContext } from '../contexts/ServerMessageContext'
 
-import { ServerErrorContext } from '../contexts/ServerErrorContext'
+import { signup } from '../services/UserServices'
 
 import Input from '../components/Input'
 
@@ -21,7 +21,7 @@ function SignUp() {
     })
     const [clientErrors, setClientErrors] = useState({})
     
-    const { setServerErrors, setShowServerErrors } = useContext(ServerErrorContext)
+    const { setServerErrors, setShowServerErrors, setServerSuccesses, setShowServerSuccesses } = useContext(ServerMessageContext)
 
     const navigate = useNavigate()
 
@@ -50,7 +50,10 @@ function SignUp() {
             return
 
         try {
-            await signup(accountData)
+            const data = await signup(accountData)
+
+            setServerSuccesses([data.success])
+            setShowServerSuccesses(true)
 
             navigate('/login')
         } catch(error) {
@@ -107,7 +110,7 @@ function SignUp() {
     return (
         <>
             <div className='container mx-auto px-16 md:w-1/3 md:px-0'>
-                    <form id='signup' onSubmit={handleSubmit} noValidate className='form-control gap-4'>
+                <form id='signup' onSubmit={handleSubmit} noValidate className='form-control gap-4'>
                     <Input
                         type="text"
                         field="first_name"

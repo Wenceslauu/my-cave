@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 
-function Error() {
+function NotFound() {
     return (
         <div className="pt-40 text-center flex flex-col gap-4">
             <div>
@@ -12,4 +12,4 @@ function Error() {
     )
 }
 
-export default Error
+export default NotFound
