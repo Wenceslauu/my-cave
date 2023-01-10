@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const api = axios.create({
-    baseURL: 'http://127.0.0.1:8080',
+    baseURL: 'https://mycave-api.onrender.com',
 })
 
 export const loadComments = async (postID) => {
@@ -23,3 +23,20 @@ export const writeComment = async (commentBody, postID) => {
 
     return data
 }
+
+export const deleteComment = async (postID, commentID) => {
+    const { data } = await api.delete(`/api/posts/${postID}/comments/${commentID}`, {
+        headers: {
+            'Authorization': localStorage.getItem('user')
+        }
+    })
+
+    return data
+}
+
+export const countComments = async () => {
+    const { data } = await api.get('/api/comments/stats')
+
+    return data
+}
+
