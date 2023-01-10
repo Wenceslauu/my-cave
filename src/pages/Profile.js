@@ -135,9 +135,15 @@ function Profile() {
         }
     }
 
-    const friendItems = friends.map((friend) => {
+    const someFriendItems = friends.map((friend) => {
         return (
             <UserCard key={friend._id} user={friend} />
+        )
+    }).slice(0, 2)
+
+    const moreFriendItems = friends.map((friend) => {
+        return (
+            <UserCard key={friend._id} user={friend} fontSize='text-sm' />
         )
     })
 
@@ -154,7 +160,7 @@ function Profile() {
                     <Avatar src={user.photo} alt={user.name} customWidth='profile-pic' />
                     <div className={`flex flex-col items-center lg:items-start gap-2 text-center lg:text-left w-full ${(loading) ? 'h-full' : '' }`}>
                         {(loading) ?
-                            <div className="lds-ripple mx-auto my-auto">
+                            <div className="lds-ripple mx-auto my-auto mt-0 lg:mt-28">
                                 <div>
                                     </div><div>
                                 </div>
@@ -227,8 +233,8 @@ function Profile() {
                                 </div><div>
                             </div>
                         </div>
-                        :   <ul className={`flex gap-4 ${(friendItems.length === 1) ? 'w-[calc(50%-0.5rem)]' : 'w-full'}`}>
-                                {friendItems.slice(0, 2)}
+                        :   <ul className={`flex gap-4 ${(moreFriendItems.length === 1) ? 'w-[calc(50%-0.5rem)]' : 'w-full'}`}>
+                                {someFriendItems}
                             </ul>
                     }
                 </div>
@@ -259,7 +265,7 @@ function Profile() {
                   <label className="modal-box relative" htmlFor="">
                     <p className='text-3xl font-bold pl-4 pb-4'>All Friends</p>
                     <ul className='grid grid-cols-2 lg:grid-cols-3 gap-4'>
-                        {friendItems}
+                        {moreFriendItems}
                     </ul>
                   </label>
                 </label>
